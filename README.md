@@ -69,7 +69,7 @@ ros2 launch semseg_ros2 mask2former_launch.py
 cd ~/colcon_ws
 source /opt/ros/noetic/setup.bash
 source /opt/ros/foxy/setup.bash
-ros2 bag play -s rosbag_v2 2024-05-16-19-24-21_0.bag
+ros2 bag play -r 0.1 -s rosbag_v2 2024-05-16-19-24-21_0.bag
 ```
 <!-- ros2 bag play -r 0.07 -s rosbag_v2 camera_2023-06-30-08-58-37_2.bag -->
 
