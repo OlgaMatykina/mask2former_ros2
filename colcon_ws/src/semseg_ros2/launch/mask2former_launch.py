@@ -21,11 +21,11 @@ def generate_launch_description():
         launch.actions.DeclareLaunchArgument(
             'camera_ns',
             # default_value='/kitti/camera_color_left/'
-            default_value='/realsense_back/color/image_raw/'
+            default_value='/realsense_back/'
         ),
         launch.actions.DeclareLaunchArgument(
             'image_topic',
-            default_value='compressed'
+            default_value='color/image_raw/compressed'
             # default_value='image_rect_color'
         ),
         launch.actions.DeclareLaunchArgument(
