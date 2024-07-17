@@ -36,6 +36,18 @@ def generate_launch_description():
             'segmentation_color_topic',
             default_value='segmentation_color'
         ),
+        launch.actions.DeclareLaunchArgument(
+            'depth_topic',
+            default_value='depth/image_rect_raw/compressedDepth'
+        ),
+        launch.actions.DeclareLaunchArgument(
+            'obstacles_visualisation_topic',
+            default_value='obstacles_visualisation'
+        ),
+        launch.actions.DeclareLaunchArgument(
+            'obstacles_topic',
+            default_value='obstacles'
+        ),
 
         # Nodes
         launch_ros.actions.Node(
@@ -72,5 +84,20 @@ def generate_launch_description():
             #     }
             # ],
             output="screen"
-        )
+        ),
+        launch_ros.actions.Node(
+            package='semseg_ros2',
+            namespace=launch.substitutions.LaunchConfiguration('camera_ns'),
+            executable='obstacle_node',
+            name='obstacle_node',
+            remappings=[
+                ('image', launch.substitutions.LaunchConfiguration('image_topic')),
+                ('segmentation', launch.substitutions.LaunchConfiguration('segmentation_topic')),
+                ('depth', launch.substitutions.LaunchConfiguration('depth_topic')),
+                ('obstacles_visualisation', launch.substitutions.LaunchConfiguration('obstacles_visualisation_topic')),
+                ('obstacles', launch.substitutions.LaunchConfiguration('obstacles_topic')),
+
+            ],
+            output="screen"
+        )  
     ])

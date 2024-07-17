@@ -36,7 +36,7 @@ class VisualizerNode(Node):
         segmentation_color = visualize(segmentation, image)
         # print('COLOR')
         # print(segmentation_color)
-        # cv2.imwrite('/home/docker_mask2former_ros2/colcon_ws/src/semseg_ros2/semseg_ros2/2.png', segmentation_color)
+        cv2.imwrite('/home/docker_mask2former_ros2/colcon_ws/src/semseg_ros2/semseg_ros2/2.png', segmentation_color)
         segm_color_msg = self.br.cv2_to_imgmsg(segmentation_color, 'bgr8')
         segm_color_msg.header = segm_msg.header
 

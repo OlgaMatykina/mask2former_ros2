@@ -12,7 +12,7 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        (os.path.join('share', package_name), glob('launch/*_launch.py'))
+        (os.path.join('share', package_name), glob('launch/*_launch.py')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -25,6 +25,7 @@ setup(
         'console_scripts': [
             'mask2former_node = semseg_ros2.mask2former_node:main',
             'visualizer_node = semseg_ros2.visualizer_node:main',
+            'obstacle_node = semseg_ros2.obstacle_node:main',
             # 'inference_meter_node = semseg_ros2.inference_meter_node:main',
         ],
     },

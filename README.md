@@ -2,10 +2,11 @@
 
 Репозиторий содержит ROS2 (Foxy) интерфейс для работы с Mask2Former.
 
-Представленные инструкции позволяют собрать 2 узла:
+Представленные инструкции позволяют собрать 3 узла:
 
-- __mask2former_node__, который слушает топик с изображениями и отправляет результаты сегментации в топик segmentation_topic;
-- __visualizer_node__, который слушает топики image и segmentation и визуализирует результаты сегментации, отправляя изображения в segmentation_color_topic.
+- __mask2former_node__, который слушает топик с изображениями и отправляет результаты сегментации в топик segmentation;
+- __visualizer_node__, который слушает топики image и segmentation и визуализирует результаты сегментации, отправляя изображения в segmentation_color.
+- __obstacle_node__, который слушает топики image, segmentation и depth,  вычисляет расстояния до всех препятствий, отправляет маски, категории препятствий и расстояния до них в топик obstacles. Также этот узел визуализирует маску ближайшего препятствия, отправляя изображения в топик obstacles_visualisation.
 
 Создание образа из докер файла:
 ```
@@ -34,12 +35,12 @@ pip install torchinfo
 
 К данному моменту предполагается, что собран образ, запущен контейнер и выполнен вход в него.
 
-Сначала необходимо собрать пакет:
+Сначала необходимо собрать пакет (и пакет пользовательского формата сообщений о препятствиях segm_msgs):
 
 ```
 cd ~/colcon_ws
 source /opt/ros/foxy/setup.bash
-colcon build --packages-select semseg_ros2 --symlink-install
+colcon build --packages-select segm_msgs semseg_ros2 --symlink-install
 source install/setup.bash 
 ```
 После этого необходимо скачать веса по [ссылке](https://dl.fbaipublicfiles.com/maskformer/mask2former/mapillary_vistas/semantic/maskformer_R50_bs16_300k/model_final_6c66d0.pkl), переименовать в "maskformer_R50_bs16_300k.pkl" и поместить файл в папку 

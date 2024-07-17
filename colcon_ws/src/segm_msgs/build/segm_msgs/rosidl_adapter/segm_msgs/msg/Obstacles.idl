@@ -1,0 +1,22 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from segm_msgs/msg/Obstacles.msg
+// generated code does not contain a copyright notice
+
+#include "segm_msgs/msg/Mask.idl"
+#include "std_msgs/msg/Header.idl"
+
+module segm_msgs {
+  module msg {
+    struct Obstacles {
+      std_msgs::msg::Header header;
+
+      int32 num;
+
+      sequence<int32> classes_ids;
+
+      sequence<segm_msgs::msg::Mask> masks;
+
+      sequence<float> distances;
+    };
+  };
+};

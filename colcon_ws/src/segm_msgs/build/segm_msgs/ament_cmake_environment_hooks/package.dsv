@@ -1,0 +1,4 @@
+source;share/segm_msgs/local_setup.bash
+source;share/segm_msgs/local_setup.dsv
+source;share/segm_msgs/local_setup.sh
+source;share/segm_msgs/local_setup.zsh

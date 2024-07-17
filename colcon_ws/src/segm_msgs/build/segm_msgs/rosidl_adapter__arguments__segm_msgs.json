@@ -1,0 +1,7 @@
+{
+  "package_name": "segm_msgs",
+  "non_idl_tuples": [
+    "/home/docker_mask2former_ros2/colcon_ws/src/segm_msgs:msg/Mask.msg",
+    "/home/docker_mask2former_ros2/colcon_ws/src/segm_msgs:msg/Obstacles.msg"
+  ]
+}
