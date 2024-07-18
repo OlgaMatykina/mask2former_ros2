@@ -54,7 +54,9 @@ class ObstacleDetection():
     
     def get_mask(self):
         obs_depth = np.where(self.mask, self.depth, 30000)
-        min_dist = np.min(obs_depth)
+        min_dist = np.min(obs_depth)/1000
+        if min_dist==30:
+            min_dist=-1
         idx_min = np.argmin(obs_depth)
         pos_min = np.unravel_index(idx_min, obs_depth.shape)
         class_obs = self.mask[pos_min]
@@ -73,7 +75,11 @@ class ObstacleDetection():
         result_mask = result_mask * class_obs
         # if np.all(result_mask==0):
         #     result_mask = np.full_like(self.mask,3)
-        return visualize(result_mask, self.image)
+        image = visualize(result_mask, self.image)
+        image = cv2.putText(image, f'Min distance to obstacle:{round(min_dist,3)} m', (50,50), cv2.FONT_HERSHEY_SIMPLEX,  
+                    1, (0, 0, 255), 2, cv2.LINE_AA)
+        
+        return image
             
         # min_dist = np.min(obs_depth)
         # idx_min = np.argmin(obs_depth)

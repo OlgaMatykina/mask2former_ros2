@@ -15,7 +15,7 @@ from segm_msgs.msg import Obstacles
 
 class ObstacleNode(Node):
     def __init__(self):
-        super().__init__('distance_node')
+        super().__init__('obstacle_node')
         #print ('GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD')
         image_sub = message_filters.Subscriber(self, CompressedImage, 'image')
         segmentation_sub = message_filters.Subscriber(self, Image, 'segmentation')
@@ -42,18 +42,6 @@ class ObstacleNode(Node):
 
         # obstacle_msg = Float64MultiArray()
         obstacles_msg = obstacle_detection.get_obstacles()
-        # if len(instances)>0:
-        #     flattened_list = []
-
-        #     for item in instances:
-        #         if isinstance(item, np.ndarray):
-        #             # Преобразование двумерного массива в одномерный и добавление элементов в результирующий список
-        #             flattened_list.extend(item.flatten())
-        #         else:
-        #             # Добавление числа в результирующий список
-        #             flattened_list.append(item)
-        #     instances = [float(i) for i in flattened_list]
-        #     obstacle_msg.data = instances
         obstacles_msg.header = image_msg.header
         self.obstacles_pub.publish(obstacles_msg)
 

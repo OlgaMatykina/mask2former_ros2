@@ -17,8 +17,7 @@ def generate_launch_description():
         #     default_value='0.5'
         # ),
 
-        # 
-                # Настройка топиков
+        # Настройка топиков
         launch.actions.DeclareLaunchArgument(
             'camera_ns',
             # default_value='/kitti/camera_color_left/'
@@ -42,14 +41,9 @@ def generate_launch_description():
             default_value='/depth_camera'
         ),
         launch.actions.DeclareLaunchArgument(
-            'obstacles_visualisation_topic',
-            default_value='obstacles_visualisation'
+            'distances_topic',
+            default_value='distances'
         ),
-        launch.actions.DeclareLaunchArgument(
-            'obstacles_topic',
-            default_value='obstacles'
-        ),
-
         # Nodes
         launch_ros.actions.Node(
             package='semseg_ros2',
@@ -68,7 +62,26 @@ def generate_launch_description():
             ],
             output="screen"
         ),
+        launch_ros.actions.Node(
+            package='semseg_ros2',
+            namespace=launch.substitutions.LaunchConfiguration('camera_ns'),
+            executable='distance_node',
+            name='distance_node',
+            remappings=[
+                ('image', launch.substitutions.LaunchConfiguration('image_topic')),
+                ('segmentation', launch.substitutions.LaunchConfiguration('segmentation_topic')),
+                ('depth', launch.substitutions.LaunchConfiguration('depth_topic')),
+                ('distances', launch.substitutions.LaunchConfiguration('distances_topic')),
 
+            ],
+            output="screen"
+        ),
+        launch.actions.ExecuteProcess(
+            cmd=['ros2', 'bag', 'record', '-a'],
+            output='screen'
+        )  
+    ])
+'''
         launch_ros.actions.Node(
             package='semseg_ros2',
             namespace=launch.substitutions.LaunchConfiguration('camera_ns'),
@@ -85,24 +98,5 @@ def generate_launch_description():
             #     }
             # ],
             output="screen"
-        ),
-        launch_ros.actions.Node(
-            package='semseg_ros2',
-            namespace=launch.substitutions.LaunchConfiguration('camera_ns'),
-            executable='obstacle_node',
-            name='obstacle_node',
-            remappings=[
-                ('image', launch.substitutions.LaunchConfiguration('image_topic')),
-                ('segmentation', launch.substitutions.LaunchConfiguration('segmentation_topic')),
-                ('depth', launch.substitutions.LaunchConfiguration('depth_topic')),
-                ('obstacles_visualisation', launch.substitutions.LaunchConfiguration('obstacles_visualisation_topic')),
-                ('obstacles', launch.substitutions.LaunchConfiguration('obstacles_topic')),
-
-            ],
-            output="screen"
-        ),
-        # launch.actions.ExecuteProcess(
-        #     cmd=['ros2', 'bag', 'record', '-a'],
-        #     output='screen'
-        # )  
-    ])
+        )
+        '''

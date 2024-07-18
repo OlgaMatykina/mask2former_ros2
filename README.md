@@ -29,6 +29,47 @@ cd ~/colcon_ws
 pip install torchinfo
 ```
 
+## Проигрывание ros2 bag
+
+Так как для публикации сообщений о препятствиях используется пользовательский тип сообщений __segm_msgs__, проигрывание бэга, содержащего все топики, требует предварительной установки пакета __segm_msgs__.
+
+К данному моменту предполагается, что собран образ, запущен контейнер и выполнен вход в него.
+
+Сначала необходимо собрать пакет пользовательского формата сообщений о препятствиях segm_msgs:
+
+```
+cd ~/colcon_ws
+source /opt/ros/foxy/setup.bash
+colcon build --packages-select segm_msgs  --symlink-install
+source install/setup.bash 
+```
+
+Затем запустить launch, который автоматически запустит необходимые компоненты, передав значения аргументов:
+1. camera_ns
+2. image_topic
+3. cfg
+
+Можно использовать аргументы по умолчанию
+```
+ros2 launch semseg_ros2 mask2former_launch.py
+```
+Для тестирования работы узла нужно поместить ROS-bag в папку ~/mask2former_ros2/colcon_ws.
+Для запуска проигрывания в отдельном терминале:
+```
+cd ~/colcon_ws
+source /opt/ros/foxy/setup.bash
+source install/setup.bash 
+ros2 bag play rosbag2_2024_07_18-01_01_11_0.db3
+```
+<!-- ros2 bag play -r 0.07 -s rosbag_v2 camera_2023-06-30-08-58-37_2.bag -->
+
+Визуализировать результаты работы можно с помощью rviz
+```
+source /opt/ros/foxy/setup.bash
+source install/setup.bash 
+rviz2
+```
+
 ## Работа с готовым пакетом
 
 В настоящем репозитории представлен готовый к использованию ROS2 пакет семантической сегментации Mask2Former.
