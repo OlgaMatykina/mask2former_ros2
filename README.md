@@ -62,7 +62,17 @@ source install/setup.bash
 ros2 bag play rosbag2_2024_07_18-01_01_11_0.db3
 ```
 <!-- ros2 bag play -r 0.07 -s rosbag_v2 camera_2023-06-30-08-58-37_2.bag -->
+Описание топиков:
+```
+/camera_left - данные с камеры
+/depth_camera - данные с камеры глубины
+/distances - расстояния до левого и правого края дороги
+/obstacles - количество препятствий, их класс и маски
+/obstacles_visualisation - визуализация препятсвий
+/road_edge_vis - визуализация краев дороги и расстояний до них
+/segmentation_color - визуализация маски дороги
 
+```
 Визуализировать результаты работы можно с помощью rviz
 ```
 source /opt/ros/foxy/setup.bash
