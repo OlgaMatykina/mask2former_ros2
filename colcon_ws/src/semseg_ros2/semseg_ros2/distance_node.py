@@ -9,7 +9,7 @@ from sensor_msgs.msg import Image, CompressedImage
 from semseg_ros2.road_detection import RoadEdgeDetection
 from semseg_ros2 import  image_tools
 from std_msgs.msg import Int32MultiArray, Float64MultiArray
-from segm_msgs.msg import Obstacles, Edges2d, Coords2d, Edges3d
+from segm_msgs.msg import Obstacles, Edges2d, Coords2d, Edges3d, Coords3d
 class DistanceNode(Node):
     def __init__(self):
         super().__init__('distance_node')
@@ -44,7 +44,15 @@ class DistanceNode(Node):
         else:
             distances = [-1.0,-1.0]
             road_edge_vis = image
-            left_side = [[-1,-1]]
+            edges2d_msg = Edges2d()
+            edges2d_msg.left_side = self.get_empty_coords2d_msg()
+            edges2d_msg.right_side = self.get_empty_coords2d_msg()
+
+            edges3d_msg = Edges3d()
+
+            edges3d_msg.left_side = self.get_empty_coords3d_msg()
+            edges3d_msg.right_side = self.get_empty_coords3d_msg()
+
         distances_msg = Float64MultiArray()
         distances_msg.data = distances
         self.distances.publish(distances_msg)
@@ -56,6 +64,18 @@ class DistanceNode(Node):
         self.coords2d.publish(edges2d_msg)
         self.coords3d.publish(edges3d_msg)
 
+    def get_empty_coords2d_msg(self):
+        msg = Coords2d()
+        msg.x = [-1]
+        msg.y = [-1]
+        return msg
+    
+    def get_empty_coords3d_msg(self):
+        msg = Coords3d()
+        msg.x = [-1]
+        msg.y = [-1]
+        msg.z = [-1]
+        return msg
 
 def main(args=None):
     rclpy.init(args=args)
