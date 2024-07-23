@@ -49,7 +49,22 @@ def generate_launch_description():
             'obstacles_topic',
             default_value='obstacles'
         ),
-
+        launch.actions.DeclareLaunchArgument(
+            'distances_topic',
+            default_value='distances'
+        ),
+        launch.actions.DeclareLaunchArgument(
+            'road_edge_vis_topic',
+            default_value='road_edge_vis'
+        ),
+        launch.actions.DeclareLaunchArgument(
+            'coords_edge_2d_topic',
+            default_value='coords_edge_2d'
+        ),
+        launch.actions.DeclareLaunchArgument(
+            'coords_edge_3d_topic',
+            default_value='coords_edge_3d'
+        ),
         # Nodes
         launch_ros.actions.Node(
             package='semseg_ros2',
@@ -101,8 +116,25 @@ def generate_launch_description():
             ],
             output="screen"
         ),
-        # launch.actions.ExecuteProcess(
-        #     cmd=['ros2', 'bag', 'record', '-a'],
-        #     output='screen'
-        # )  
+        launch_ros.actions.Node(
+            package='semseg_ros2',
+            namespace=launch.substitutions.LaunchConfiguration('camera_ns'),
+            executable='distance_node',
+            name='distance_node',
+            remappings=[
+                ('image', launch.substitutions.LaunchConfiguration('image_topic')),
+                ('segmentation', launch.substitutions.LaunchConfiguration('segmentation_topic')),
+                ('depth', launch.substitutions.LaunchConfiguration('depth_topic')),
+                ('distances', launch.substitutions.LaunchConfiguration('distances_topic')),
+                ('road_edge_vis', launch.substitutions.LaunchConfiguration('road_edge_vis_topic')),
+                ('coords_edge_2d', launch.substitutions.LaunchConfiguration('coords_edge_2d_topic')),
+                ('coords_edge_3d', launch.substitutions.LaunchConfiguration('coords_edge_3d_topic'))
+
+            ],
+            output="screen"
+        ),
+         launch.actions.ExecuteProcess(
+             cmd=['ros2', 'bag', 'record', '-a'],
+             output='screen'
+         )  
     ])

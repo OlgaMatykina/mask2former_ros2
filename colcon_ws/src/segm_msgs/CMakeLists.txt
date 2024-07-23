@@ -38,6 +38,10 @@ find_package(rosidl_default_generators REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Mask.msg"
   "msg/Obstacles.msg"
+  "msg/Coords2d.msg"
+  "msg/Edges2d.msg"
+  "msg/Coords3d.msg"
+  "msg/Edges3d.msg"
   DEPENDENCIES std_msgs # Add packages that above messages depend on, in this case std_msgs for Obstacles.msg
 )
 

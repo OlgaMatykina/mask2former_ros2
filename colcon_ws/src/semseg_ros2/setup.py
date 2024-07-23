@@ -27,6 +27,7 @@ setup(
             'visualizer_node = semseg_ros2.visualizer_node:main',
             'obstacle_node = semseg_ros2.obstacle_node:main',
             # 'inference_meter_node = semseg_ros2.inference_meter_node:main',
+            'distance_node = semseg_ros2.distance_node:main',
         ],
     },
 )
