@@ -53,13 +53,13 @@ source install/setup.bash
 ```
 ros2 launch semseg_ros2 mask2former_launch.py
 ```
-Для тестирования работы узла нужно поместить ROS-bag в папку ~/mask2former_ros2/colcon_ws.
+Для тестирования работы узла нужно поместить [ROS-bag](https://drive.google.com/file/d/1uG1r_Vf_vMfnW9d4shaeZieR_HbaG1Y9/view?usp=sharing) в папку ~/mask2former_ros2/colcon_ws.
 Для запуска проигрывания в отдельном терминале:
 ```
 cd ~/colcon_ws
 source /opt/ros/foxy/setup.bash
 source install/setup.bash 
-ros2 bag play rosbag2_2024_07_18-01_01_11_0.db3
+ros2 bag play rosbag2_2024_07_22-19_58_03_0.db3
 ```
 <!-- ros2 bag play -r 0.07 -s rosbag_v2 camera_2023-06-30-08-58-37_2.bag -->
 Описание топиков:
