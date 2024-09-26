@@ -2,6 +2,7 @@ import rclpy
 import cv2
 import numpy as np
 import message_filters
+from rosidl_runtime_py.utilities import get_message
 
 from rclpy.node import Node
 from cv_bridge import CvBridge
@@ -11,12 +12,24 @@ from semseg_ros2 import  image_tools
 from std_msgs.msg import Int32MultiArray, Float64MultiArray
 from segm_msgs.msg import Obstacles, Edges2d, Coords2d, Edges3d, Coords3d
 class DistanceNode(Node):
+    def get_topic_type(self, topic_name):
+        # Получаем тип сообщения
+        msg_type = self.get_topic_names_and_types()
+        # Извлекаем тип для нужного топика
+        for name, types in msg_type:
+            if name == topic_name:
+                return types[0]  # Возвращаем первый тип
+        return 'sensor_msgs/msg/CompressedImage'
     def __init__(self):
         super().__init__('distance_node')
         #print ('GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD')
         image_sub = message_filters.Subscriber(self, CompressedImage, 'image')
         segmentation_sub = message_filters.Subscriber(self, Image, 'segmentation')
-        depth_sub = message_filters.Subscriber(self, CompressedImage, 'depth')
+         # Получаем тип сообщения
+        self.depth_msg_type = self.get_topic_type('/depth_camera')
+        
+        # depth_sub = message_filters.Subscriber(self, CompressedImage, 'depth')
+        depth_sub = message_filters.Subscriber(self, get_message(self.depth_msg_type), 'depth')
         # depth_sub = message_filters.Subscriber(self, CompressedImage,'/realsense_back/depth/image_rect_raw/compressedDepth')
         self.ts = message_filters.TimeSynchronizer([image_sub, segmentation_sub,depth_sub], 10)
         self.ts.registerCallback(self.road_edge_detection)
@@ -27,12 +40,18 @@ class DistanceNode(Node):
         self.coords3d = self.create_publisher(Edges3d, 'coords_edge_3d', 10)
         self.br = CvBridge()
         
-    def road_edge_detection(self, image_msg: CompressedImage, segm_msg: Image, depth_msg: CompressedImage):
+    def road_edge_detection(self, image_msg: CompressedImage, segm_msg: Image, depth_msg):
         image = self.br.compressed_imgmsg_to_cv2(image_msg, desired_encoding='bgr8')
         height, width = image.shape[:2]
         mask = self.br.imgmsg_to_cv2(segm_msg, desired_encoding='mono8')
         mask = np.where(mask==3,mask,0)
-        depth = image_tools.it.convert_compressedDepth_to_cv2(depth_msg)
+
+        if self.depth_msg_type == 'sensor_msgs/msg/CompressedImage':
+            depth = image_tools.it.convert_compressedDepth_to_cv2(depth_msg)
+        else:
+            depth = self.br.imgmsg_to_cv2(depth_msg)
+
+        # depth = image_tools.it.convert_compressedDepth_to_cv2(depth_msg)
         cropped_depth_map = depth[66:-66, 115:-115]
         depth_map_resized = cv2.resize(cropped_depth_map, (width, height), interpolation=cv2.INTER_NEAREST)
         depth_map_resized[depth_map_resized == 0] = 15000

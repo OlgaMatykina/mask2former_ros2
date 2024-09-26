@@ -2,6 +2,7 @@ import rclpy
 import cv2
 import numpy as np
 import message_filters
+from rosidl_runtime_py.utilities import get_message
 
 from rclpy.node import Node
 from cv_bridge import CvBridge
@@ -14,12 +15,29 @@ from semseg_ros2.obstacle_detection import ObstacleDetection
 from segm_msgs.msg import Obstacles
 
 class ObstacleNode(Node):
+    def get_topic_type(self, topic_name):
+        # Получаем тип сообщения
+        msg_type = self.get_topic_names_and_types()
+        # print('TYPES', msg_type)
+        # Извлекаем тип для нужного топика
+        for name, types in msg_type:
+            if name == topic_name:
+                return types[0]  # Возвращаем первый тип
+        return 'sensor_msgs/msg/CompressedImage'
     def __init__(self):
         super().__init__('obstacle_node')
         #print ('GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD')
         image_sub = message_filters.Subscriber(self, CompressedImage, 'image')
         segmentation_sub = message_filters.Subscriber(self, Image, 'segmentation')
-        depth_sub = message_filters.Subscriber(self, CompressedImage, 'depth')
+        
+        # Получаем тип сообщения
+        self.depth_msg_type = self.get_topic_type('/depth_camera')
+
+        print('TYPE', self.depth_msg_type)
+        
+        # depth_sub = message_filters.Subscriber(self, CompressedImage, 'depth')
+        depth_sub = message_filters.Subscriber(self, get_message(self.depth_msg_type), '/depth_camera')
+
         self.ts = message_filters.TimeSynchronizer([image_sub, segmentation_sub, depth_sub], 10)
         self.ts.registerCallback(self.obstacle_detection)
 
@@ -27,16 +45,20 @@ class ObstacleNode(Node):
         self.obstacles_pub = self.create_publisher(Obstacles, 'obstacles', 10)
 
         self.br = CvBridge()
-    def obstacle_detection(self, image_msg: CompressedImage, segm_msg: Image, depth_msg: CompressedImage):
+
+    # def obstacle_detection(self, image_msg: CompressedImage, segm_msg: Image, depth_msg: CompressedImage):
+    def obstacle_detection(self, image_msg: CompressedImage, segm_msg: Image, depth_msg):
         image = self.br.compressed_imgmsg_to_cv2(image_msg, desired_encoding='bgr8')
         cv2.imwrite('/home/docker_mask2former_ros2/colcon_ws/src/semseg_ros2/semseg_ros2/0.png', image)
         mask = self.br.imgmsg_to_cv2(segm_msg, desired_encoding='mono8')
         mask = np.where(np.isin(mask, [1,2]),mask,0)
-        depth = image_tools.it.convert_compressedDepth_to_cv2(depth_msg)
-        # depth = image_tools.it.convert_ros_msg_to_cv2(depth_msg)
-        # depth = self.br.imgmsg_to_cv2(segm_msg)
+        if self.depth_msg_type == 'sensor_msgs/msg/CompressedImage':
+            depth = image_tools.it.convert_compressedDepth_to_cv2(depth_msg)
+        else:
+            depth = self.br.imgmsg_to_cv2(depth_msg)
         depth = resize_depth(depth, image)
         cv2.imwrite('/home/docker_mask2former_ros2/colcon_ws/src/semseg_ros2/semseg_ros2/3.png', depth)
+        print('MAX_DEPTH', np.max(depth, axis=0))
         depth[depth == 0] = 15000
         obstacle_detection = ObstacleDetection(image, mask, depth)
 

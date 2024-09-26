@@ -2,7 +2,7 @@
 
 Репозиторий содержит ROS2 (Foxy) интерфейс для работы с Mask2Former.
 
-Представленные инструкции позволяют собрать 3 узла:
+Представленные инструкции позволяют собрать 4 узла:
 
 - __mask2former_node__, который слушает топик с изображениями и отправляет результаты сегментации в топик segmentation;
 - __visualizer_node__, который слушает топики image и segmentation и визуализирует результаты сегментации, отправляя изображения в segmentation_color.
@@ -32,6 +32,16 @@ pip install torchinfo
 ## Проигрывание ros2 bag
 
 Так как для публикации сообщений о препятствиях используется пользовательский тип сообщений __segm_msgs__, проигрывание бэга, содержащего все топики, требует предварительной установки пакета __segm_msgs__.
+
+### Без CUDA
+
+Возможно проигрывание бэга на компьютере без видео-карты NVIDIA, для этого нужно собрать и запустить образ командами
+```
+./build_no_cuda.sh
+./start_no_cuda.sh
+./into.sh
+``` 
+В Dockerfile_bridge_no_cuda устанавливается ros2 и torch без cuda, что позволит установить пакет пользовательского типа сообщений __segm_msgs__ и проиграть все топики бэга.
 
 К данному моменту предполагается, что собран образ, запущен контейнер и выполнен вход в него.
 
@@ -117,12 +127,23 @@ source install/setup.bash
 ros2 launch semseg_ros2 mask2former_launch.py
 ```
 Для тестирования работы узла нужно поместить ROS-bag в папку ~/mask2former_ros2/colcon_ws.
-Для запуска проигрывания нужно сначала активировать окружение ROS1, затем ROS2:
+<!-- Для запуска проигрывания нужно сначала активировать окружение ROS1, затем ROS2: -->
+Затем выполнить следующие команды, не забыть переименовать топики от текущей модели камеры в /camera_left и /depth_camera:
+
+
+если бэг записан в ROS1 (расширение .bag):
 ```
 cd ~/colcon_ws
 source /opt/ros/noetic/setup.bash
 source /opt/ros/foxy/setup.bash
-ros2 bag play -r 0.15 -s rosbag_v2 2024-05-16-19-24-21_0.bag
+ros2 bag play -r 0.15 -s rosbag_v2 2024-05-16-19-24-21_0.bag -l --remap /realsense_back/color/image_raw/compressed:=/camera_left /realsense_back/depth/image_rect_raw/compressedDepth:=/depth_camera
+```
+
+если бэг записан в ROS2 (расширение .db3):
+```
+cd ~/colcon_ws
+source /opt/ros/foxy/setup.bash
+ros2 bag play -r 0.15 rosbag2_2024_09_18-13_15_18_0.db3 -l --remap /cam1/zed_node_0/left/image_rect_color/compressed:=/camera_left /cam1/zed_node_0/depth/depth_registered:=/depth_camera
 ```
 <!-- ros2 bag play -r 0.07 -s rosbag_v2 camera_2023-06-30-08-58-37_2.bag -->
 
