@@ -31,23 +31,29 @@ class DepthImageCompressor(Node):
         try:
             # Преобразуем сообщение ROS в изображение OpenCV
             cv_image = self.bridge.imgmsg_to_cv2(msg)
+            cv_image = np.nan_to_num(cv_image, nan=100, posinf=200, neginf=200)
+            cv2.imwrite('/home/docker_mask2former_ros2/colcon_ws/src/semseg_ros2/semseg_ros2/5.png', cv_image)
 
-            # Нормализуем изображение для корректного сжатия (так как глубинные карты могут быть в формате float32)
-            # normalized_image = cv2.normalize(cv_image, None, 0, 255, cv2.NORM_MINMAX)
-            normalized_image = np.uint16(cv_image)
+            print(np.count_nonzero(np.isnan(cv_image)))
+            print(cv_image.shape)
+            print(np.min(cv_image))
 
-            # Сжимаем изображение в формат JPEG
-            success, compressed_image = cv2.imencode('.png', normalized_image)
+        #     # Нормализуем изображение для корректного сжатия (так как глубинные карты могут быть в формате float32)
+        #     # normalized_image = cv2.normalize(cv_image, None, 0, 255, cv2.NORM_MINMAX)
+        #     normalized_image = np.uint16(cv_image)
 
-            if success:
-                # Создаем сообщение CompressedImage
-                compressed_msg = CompressedImage()
-                compressed_msg.header = msg.header
-                compressed_msg.format = "png"
-                compressed_msg.data = np.array(compressed_image).tobytes()
+        #     # Сжимаем изображение в формат JPEG
+        #     success, compressed_image = cv2.imencode('.png', normalized_image)
 
-                # Публикуем сжатое изображение
-                self.compressed_image_publisher.publish(compressed_msg)
+        #     if success:
+        #         # Создаем сообщение CompressedImage
+        #         compressed_msg = CompressedImage()
+        #         compressed_msg.header = msg.header
+        #         compressed_msg.format = "png"
+        #         compressed_msg.data = np.array(compressed_image).tobytes()
+
+        #         # Публикуем сжатое изображение
+        #         self.compressed_image_publisher.publish(compressed_msg)
 
         except Exception as e:
             self.get_logger().error(f"Ошибка при обработке изображения: {e}")
