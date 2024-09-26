@@ -19,7 +19,7 @@ class DistanceNode(Node):
         for name, types in msg_type:
             if name == topic_name:
                 return types[0]  # Возвращаем первый тип
-        return 'sensor_msgs/msg/Image'
+        return 'sensor_msgs/msg/CompressedImage'
     def __init__(self):
         super().__init__('distance_node')
         #print ('GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD')

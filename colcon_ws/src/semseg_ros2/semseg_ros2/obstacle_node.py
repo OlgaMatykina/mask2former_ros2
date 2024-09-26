@@ -23,7 +23,7 @@ class ObstacleNode(Node):
         for name, types in msg_type:
             if name == topic_name:
                 return types[0]  # Возвращаем первый тип
-        return 'sensor_msgs/msg/Image'
+        return 'sensor_msgs/msg/CompressedImage'
     def __init__(self):
         super().__init__('obstacle_node')
         #print ('GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD')
@@ -36,7 +36,7 @@ class ObstacleNode(Node):
         print('TYPE', self.depth_msg_type)
         
         # depth_sub = message_filters.Subscriber(self, CompressedImage, 'depth')
-        depth_sub = message_filters.Subscriber(self, get_message(self.depth_msg_type), 'depth')
+        depth_sub = message_filters.Subscriber(self, get_message(self.depth_msg_type), '/depth_camera')
 
         self.ts = message_filters.TimeSynchronizer([image_sub, segmentation_sub, depth_sub], 10)
         self.ts.registerCallback(self.obstacle_detection)
@@ -58,6 +58,7 @@ class ObstacleNode(Node):
             depth = self.br.imgmsg_to_cv2(depth_msg)
         depth = resize_depth(depth, image)
         cv2.imwrite('/home/docker_mask2former_ros2/colcon_ws/src/semseg_ros2/semseg_ros2/3.png', depth)
+        print('MAX_DEPTH', np.max(depth, axis=0))
         depth[depth == 0] = 15000
         obstacle_detection = ObstacleDetection(image, mask, depth)
 

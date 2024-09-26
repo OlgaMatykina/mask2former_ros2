@@ -130,11 +130,16 @@ ros2 launch semseg_ros2 mask2former_launch.py
 <!-- Для запуска проигрывания нужно сначала активировать окружение ROS1, затем ROS2: -->
 Затем выполнить следующие команды, не забыть переименовать топики от текущей модели камеры в /camera_left и /depth_camera:
 
-<!-- cd ~/colcon_ws
+
+если бэг записан в ROS1 (расширение .bag):
+```
+cd ~/colcon_ws
 source /opt/ros/noetic/setup.bash
 source /opt/ros/foxy/setup.bash
-ros2 bag play -r 0.15 -s rosbag_v2 2024-05-16-19-24-21_0.bag -->
+ros2 bag play -r 0.15 -s rosbag_v2 2024-05-16-19-24-21_0.bag -l --remap /realsense_back/color/image_raw/compressed:=/camera_left /realsense_back/depth/image_rect_raw/compressedDepth:=/depth_camera
+```
 
+если бэг записан в ROS2 (расширение .db3):
 ```
 cd ~/colcon_ws
 source /opt/ros/foxy/setup.bash

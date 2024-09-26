@@ -12,17 +12,17 @@ class DepthImageCompressor(Node):
         # Создаем подписчика на топик с глубинным изображением
         self.image_subscriber = self.create_subscription(
             Image,
-            '/depth_camera_raw',  # Измените на ваш топик
+            '/depth_camera',  # Измените на ваш топик
             self.image_callback,
             10
         )
 
-        # Публикуем сжатое изображение
-        self.compressed_image_publisher = self.create_publisher(
-            CompressedImage,
-            '/depth_camera',
-            10
-        )
+        # # Публикуем сжатое изображение
+        # self.compressed_image_publisher = self.create_publisher(
+        #     CompressedImage,
+        #     '/depth_camera',
+        #     10
+        # )
 
         # Используем CvBridge для конвертации между ROS и OpenCV
         self.bridge = CvBridge()
@@ -30,7 +30,7 @@ class DepthImageCompressor(Node):
     def image_callback(self, msg):
         try:
             # Преобразуем сообщение ROS в изображение OpenCV
-            cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='passthrough')
+            cv_image = self.bridge.imgmsg_to_cv2(msg)
 
             # Нормализуем изображение для корректного сжатия (так как глубинные карты могут быть в формате float32)
             # normalized_image = cv2.normalize(cv_image, None, 0, 255, cv2.NORM_MINMAX)
