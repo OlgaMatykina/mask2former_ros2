@@ -44,19 +44,24 @@ class DistanceNode(Node):
         image = self.br.compressed_imgmsg_to_cv2(image_msg, desired_encoding='bgr8')
         height, width = image.shape[:2]
         mask = self.br.imgmsg_to_cv2(segm_msg, desired_encoding='mono8')
-        mask = np.where(mask==3,mask,0)
+        
+        road_mask = np.where(mask == 3, mask, 0)
+        #negative = np.where(mask==1, mask, 0).astype(np.uint8)
+        positive = np.where(mask==2, mask, 0).astype(np.uint8)
 
         if self.depth_msg_type == 'sensor_msgs/msg/CompressedImage':
             depth = image_tools.it.convert_compressedDepth_to_cv2(depth_msg)
         else:
             depth = self.br.imgmsg_to_cv2(depth_msg)
 
-        # depth = image_tools.it.convert_compressedDepth_to_cv2(depth_msg)
-        cropped_depth_map = depth[66:-66, 115:-115]
-        depth_map_resized = cv2.resize(cropped_depth_map, (width, height), interpolation=cv2.INTER_NEAREST)
-        depth_map_resized[depth_map_resized == 0] = 15000
+        # # depth = image_tools.it.convert_compressedDepth_to_cv2(depth_msg)
+        # cropped_depth_map = depth[66:-66, 115:-115]
+        # depth_map_resized = cv2.resize(cropped_depth_map, (width, height), interpolation=cv2.INTER_NEAREST)
+        # depth_map_resized[depth_map_resized == 0] = 15000
+        depth[depth == 0] = 45
+        depth = np.nan_to_num(depth, nan=200, posinf=200, neginf=200)
         if np.sum(mask) > 300:
-            road_detection = RoadEdgeDetection(image, mask, depth_map_resized)
+            road_detection = RoadEdgeDetection(image, road_mask, positive, depth)
 
             distances, road_edge_vis, edges2d_msg, edges3d_msg = road_detection.find_distances()
             cv2.imwrite('test.png', road_edge_vis)

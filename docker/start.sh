@@ -31,6 +31,6 @@ docker run -it -d --rm  --gpus all \
         --privileged \
         --name mask2former_ros2 \
         -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
-        -v /home/administrator/mask2former_ros2/colcon_ws:/home/docker_mask2former_ros2/colcon_ws:rw \
+        -v /home/administrator/vega_frontend/mask2former_ros2/colcon_ws:/home/docker_mask2former_ros2/colcon_ws:rw \
         ${ARCH}foxy/semseg_m2f:latest
 xhost -

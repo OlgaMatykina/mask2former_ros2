@@ -40,9 +40,9 @@ class SemanticSegmentator:
         # print(segmentation)
         new_cats_dict = {
             0: 0,    # 'Bird'
-            1: 0,    # 'Ground Animal'
-            2: 0,    # 'Curb'
-            3: 0,    # 'Fence'
+            1: 1,    # 'Ground Animal'
+            2: 2,    # 'Curb'
+            3: 3,    # 'Fence'
             4: 0,    # 'Guard Rail'
             5: 0,    # 'Barrier'
             6: 0,    # 'Wall'

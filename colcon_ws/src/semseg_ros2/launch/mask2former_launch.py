@@ -10,7 +10,7 @@ def generate_launch_description():
         launch.actions.DeclareLaunchArgument(
             'cfg',
             # default_value='/home/docker_mask2former_ros2/colcon_ws/src/semseg/configs/mapillary-vistas/semantic-segmentation/swin/maskformer2_swin_large_IN21k_384_bs16_300k.yaml'
-            default_value='/home/docker_mask2former_ros2/colcon_ws/src/semseg/configs/mapillary-vistas/semantic-segmentation/maskformer2_R50_bs16_300k.yaml'
+            default_value='/home/docker_mask2former_ros2/colcon_ws/src/semseg/configs/vega_semantic/maskformer2_R50_bs16_300k.yaml'
         ),
         # launch.actions.DeclareLaunchArgument(
         #     'treshold',

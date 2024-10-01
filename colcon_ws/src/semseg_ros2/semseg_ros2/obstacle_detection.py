@@ -9,6 +9,10 @@ import time
 from semseg.visualize import visualize
 from segm_msgs.msg import Mask, Obstacles
 
+import rclpy
+
+logger = rclpy.logging.get_logger("obstacle_node")
+
 class ObstacleDetection():
     def __init__(self, image, mask, depth):
         self.image = image
@@ -16,6 +20,7 @@ class ObstacleDetection():
         self.depth = depth
 
     def get_obstacles(self):
+        
         negative = np.where(self.mask==1, self.mask, 0).astype(np.uint8)
         positive = np.where(self.mask==2, self.mask, 0).astype(np.uint8)
         msg = Obstacles()
@@ -25,37 +30,58 @@ class ObstacleDetection():
 
         # instances_list = []
         # instance_id = 1
+        # start_time = time.time()
+        pattern = np.zeros_like(self.mask)
+        pattern[-90:]=1
         for category_id, mask in enumerate([negative, positive]):
             contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             for contour in contours:
-                mask_msg = Mask()
+                start_time = time.time()
                 instance = np.zeros_like(mask)
                 cv2.drawContours(instance, [contour], -1, 1, thickness = cv2.FILLED) #instance of obstacles
                 instance = instance.astype('uint8')
-                mask_msg.height, mask_msg.width = instance.shape[:2]
-                mask_msg.mask = instance.flatten().tolist()
+                if np.sum(instance)<300:
+                    continue
+                if np.all(instance<=pattern): # remove the mask if it is at the bottom of the frame
+                    continue
 
-                obs_depth = np.where(instance, self.depth, 30000)
+                mask_msg = Mask()                
+                mask_msg.height, mask_msg.width = instance.shape[:2]
+
+                start_time_mask = time.time()
+                tmp_mask = instance.flatten()
+                end_time_mask = time.time()
+                processing_time = (end_time_mask - start_time_mask) * 1000  # в миллисекундах
+                logger.info(f'Mask flatten: {processing_time:.2f} ms')
+
+                start_time_mask = time.time()
+                mask_msg.mask = tmp_mask.tolist()
+                end_time_mask = time.time()
+                processing_time = (end_time_mask - start_time_mask) * 1000  # в миллисекундах
+                logger.info(f'Mask to list: {processing_time:.2f} ms')
+
+                obs_depth = np.where(instance, self.depth, 50000)
                 min_dist = np.min(obs_depth)
 
                 msg.classes_ids.append(category_id+1)
                 msg.masks.append(mask_msg)
                 msg.distances.append(min_dist)
-                # instances_list.append(category_id+1)
-                # instances_list.append(min_dist)
-                # instances_list.append(instance)
-                # # msg.id = instance_id
-                # instance_id+=1
-                # msg.category_id = category_id+1
-                # msg.mask = instance
-                # msg.distance = min_dist
-        msg.num = len(msg.classes_ids)
+            
+                end_time = time.time()
+                processing_time = (end_time - start_time) * 1000  # в миллисекундах
+                logger.info(f'Instance cutting: {processing_time:.2f} ms')
+            msg.num = len(msg.classes_ids)
+
+
+        # rois = get_masks_rois(np.array(msg.masks))
+        # masks_in_rois = get_masks_in_rois(np.array(msg.masks, rois))
+
         return msg
     
     def get_mask(self):
-        obs_depth = np.where(self.mask, self.depth, 30000)
-        min_dist = np.min(obs_depth)/1000
-        if min_dist==30:
+        obs_depth = np.where(self.mask, self.depth, 50)
+        min_dist = np.min(obs_depth)
+        if min_dist==50:
             min_dist=-1
         idx_min = np.argmin(obs_depth)
         pos_min = np.unravel_index(idx_min, obs_depth.shape)

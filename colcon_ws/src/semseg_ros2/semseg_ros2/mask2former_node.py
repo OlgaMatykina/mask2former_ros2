@@ -9,6 +9,7 @@ from semseg.mask2form import SemanticSegmentator
 from semseg_ros2.inference_speed_meter import InferenceSpeedMeter
 from semseg.visualize import visualize
 import time
+import numpy as np
 
 class SemSegNode(Node):
 
@@ -42,14 +43,15 @@ class SemSegNode(Node):
         start_time = time.time()
         segmentation = self.segmentator.inference(image)
         # print('SEGMENTATION')
-        # print(segmentation)
+        # print(np.unique(segmentation, return_counts=True))
+        # print(segmentation.shape)
         # cv2.imwrite('/home/docker_mask2former_ros2/colcon_ws/src/semseg_ros2/semseg_ros2/1.png', segmentation)
         # cv2.imwrite('/home/docker_mask2former_ros2/colcon_ws/src/semseg_ros2/semseg_ros2/2.png', self.segmentator.colorize(segmentation))
         # cv2.imwrite('/home/docker_mask2former_ros2/colcon_ws/src/semseg_ros2/semseg_ros2/2.png', visualize(segmentation, image))
         # self.speed_meter.stop()
         end_time = time.time()
         processing_time = (end_time - start_time) * 1000  # в миллисекундах
-        print(f'Processing time: {processing_time:.2f} ms')
+        # self.get_logger().info(f'Processing time: {processing_time:.2f} ms')
 
         segmentation_msg = self.br.cv2_to_imgmsg(segmentation, 'mono8')
         segmentation_msg.header = image_msg.header

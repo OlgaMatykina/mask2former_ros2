@@ -14,6 +14,8 @@ from std_msgs.msg import Int32MultiArray, Float64MultiArray
 from semseg_ros2.obstacle_detection import ObstacleDetection
 from segm_msgs.msg import Obstacles
 
+import time
+
 class ObstacleNode(Node):
     def get_topic_type(self, topic_name):
         # Получаем тип сообщения
@@ -49,26 +51,32 @@ class ObstacleNode(Node):
     # def obstacle_detection(self, image_msg: CompressedImage, segm_msg: Image, depth_msg: CompressedImage):
     def obstacle_detection(self, image_msg: CompressedImage, segm_msg: Image, depth_msg):
         image = self.br.compressed_imgmsg_to_cv2(image_msg, desired_encoding='bgr8')
-        cv2.imwrite('/home/docker_mask2former_ros2/colcon_ws/src/semseg_ros2/semseg_ros2/0.png', image)
+        # cv2.imwrite('/home/docker_mask2former_ros2/colcon_ws/src/semseg_ros2/semseg_ros2/0.png', image)
         mask = self.br.imgmsg_to_cv2(segm_msg, desired_encoding='mono8')
         mask = np.where(np.isin(mask, [1,2]),mask,0)
         if self.depth_msg_type == 'sensor_msgs/msg/CompressedImage':
             depth = image_tools.it.convert_compressedDepth_to_cv2(depth_msg)
         else:
             depth = self.br.imgmsg_to_cv2(depth_msg)
-        depth = resize_depth(depth, image)
-        cv2.imwrite('/home/docker_mask2former_ros2/colcon_ws/src/semseg_ros2/semseg_ros2/3.png', depth)
-        print('MAX_DEPTH', np.max(depth, axis=0))
-        depth[depth == 0] = 15000
+        # depth = resize_depth(depth, image)
+        # cv2.imwrite('/home/docker_mask2former_ros2/colcon_ws/src/semseg_ros2/semseg_ros2/3.png', depth)
+        # print('MAX_DEPTH', np.max(depth, axis=0))
+        depth[depth == 0] = 45
+        depth = np.nan_to_num(depth, nan=200, posinf=200, neginf=200)
         obstacle_detection = ObstacleDetection(image, mask, depth)
 
         # obstacle_msg = Float64MultiArray()
+
+        start_time = time.time()
         obstacles_msg = obstacle_detection.get_obstacles()
+        end_time = time.time()
+        processing_time = (end_time - start_time) * 1000  # в миллисекундах
+        # self.get_logger().info(f'Processing time: {processing_time:.2f} ms')
         obstacles_msg.header = image_msg.header
         self.obstacles_pub.publish(obstacles_msg)
 
         obstacles_vis = obstacle_detection.get_mask()
-        cv2.imwrite('/home/docker_mask2former_ros2/colcon_ws/src/semseg_ros2/semseg_ros2/4.png', obstacles_vis)
+        # cv2.imwrite('/home/docker_mask2former_ros2/colcon_ws/src/semseg_ros2/semseg_ros2/4.png', obstacles_vis)
         obstacles_vis_msg = self.br.cv2_to_imgmsg(obstacles_vis, 'bgr8')
         obstacles_vis_msg.header = image_msg.header
         
