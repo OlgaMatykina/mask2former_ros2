@@ -152,3 +152,9 @@ ros2 bag play -r 0.15 rosbag2_2024_09_18-13_15_18_0.db3 -l --remap /cam1/zed_nod
 source /opt/ros/foxy/setup.bash
 rviz2
 ```
+
+Для записи бэга использовать следующую команду
+```
+ros2 bag record /camera_left /coords_edge_2d /coords_edge_3d /depth_camera /distances /obstacles /obstacles_visualisation \
+  /radar/target_list_cartesian /road_edge_vis /segmentation /segmentation_color /tf /tf_static
+```
