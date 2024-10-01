@@ -54,6 +54,7 @@ class ObstacleNode(Node):
         # cv2.imwrite('/home/docker_mask2former_ros2/colcon_ws/src/semseg_ros2/semseg_ros2/0.png', image)
         mask = self.br.imgmsg_to_cv2(segm_msg, desired_encoding='mono8')
         mask = np.where(np.isin(mask, [1,2]),mask,0)
+        mask[-90:] = 0
         if self.depth_msg_type == 'sensor_msgs/msg/CompressedImage':
             depth = image_tools.it.convert_compressedDepth_to_cv2(depth_msg)
         else:

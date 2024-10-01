@@ -49,6 +49,7 @@ class SemSegNode(Node):
         # cv2.imwrite('/home/docker_mask2former_ros2/colcon_ws/src/semseg_ros2/semseg_ros2/2.png', self.segmentator.colorize(segmentation))
         # cv2.imwrite('/home/docker_mask2former_ros2/colcon_ws/src/semseg_ros2/semseg_ros2/2.png', visualize(segmentation, image))
         # self.speed_meter.stop()
+        segmentation[-90:] = np.where(segmentation[-90:],3,0)
         end_time = time.time()
         processing_time = (end_time - start_time) * 1000  # в миллисекундах
         # self.get_logger().info(f'Processing time: {processing_time:.2f} ms')
