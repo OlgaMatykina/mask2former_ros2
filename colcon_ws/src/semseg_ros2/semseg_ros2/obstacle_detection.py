@@ -85,8 +85,10 @@ class ObstacleDetection():
                 # processing_time = (end_time - start_time) * 1000  # в миллисекундах
                 # logger.info(f'Instance cutting: {processing_time:.2f} ms')
             # msg.num = len(msg.classes_ids)
-
-        scaled_masks = np.stack(instances_list, axis=0)
+        if len(instances_list)==0:
+            scaled_masks = instances_list
+        else:
+            scaled_masks = np.stack(instances_list, axis=0)
         # logger.info(f'Shape of tensor masks: {scaled_masks.shape}')
         rois = get_masks_rois(scaled_masks)
         masks_in_rois = get_masks_in_rois(scaled_masks, rois)
