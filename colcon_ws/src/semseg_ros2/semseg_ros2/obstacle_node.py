@@ -12,7 +12,7 @@ from semseg_ros2.depth import resize_depth
 from std_msgs.msg import Int32MultiArray, Float64MultiArray
 # from segm_msgs.segm_msgsfin import InstanceSegmentationList
 from semseg_ros2.obstacle_detection import ObstacleDetection
-from segm_msgs.msg import Obstacles
+from segm_msgs.msg import Obstacles, Objects
 
 import time
 
@@ -44,7 +44,8 @@ class ObstacleNode(Node):
         self.ts.registerCallback(self.obstacle_detection)
 
         self.obstacles_vis_pub = self.create_publisher(Image, 'obstacles_visualisation', 10)
-        self.obstacles_pub = self.create_publisher(Obstacles, 'obstacles', 10)
+        # self.obstacles_pub = self.create_publisher(Obstacles, 'obstacles', 10)
+        self.obstacles_pub = self.create_publisher(Objects, 'obstacles', 10)
 
         self.br = CvBridge()
 
@@ -72,7 +73,7 @@ class ObstacleNode(Node):
         obstacles_msg = obstacle_detection.get_obstacles()
         end_time = time.time()
         processing_time = (end_time - start_time) * 1000  # в миллисекундах
-        # self.get_logger().info(f'Processing time: {processing_time:.2f} ms')
+        self.get_logger().info(f'Processing time: {processing_time:.2f} ms')
         obstacles_msg.header = image_msg.header
         self.obstacles_pub.publish(obstacles_msg)
 
