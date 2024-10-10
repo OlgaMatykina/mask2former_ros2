@@ -26,7 +26,7 @@
 ```
 cd ~/colcon_ws
 ./make_ops.sh
-pip install torchinfo
+<!-- pip install torchinfo -->
 ```
 
 ## Проигрывание ros2 bag

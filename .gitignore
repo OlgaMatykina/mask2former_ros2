@@ -9,6 +9,7 @@
 /colcon_ws/src/semseg/weights/model_2734train_10cats.pth
 /colcon_ws/src/semseg/weights/*.pkl
 /colcon_ws/src/semseg/weights/*.pth
+/colcon_ws/src/semseg/weights/*.pt
 /colcon_ws/src/semseg/oneformer/__pycache__
 /colcon_ws/src/semseg/semseg/__pycache__
 /colcon_ws/src/semseg_ros2/semseg_ros2/__pycache__/*

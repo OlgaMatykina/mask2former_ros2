@@ -75,3 +75,4 @@ RUN python3 -m pip install -U 'git+https://github.com/facebookresearch/detectron
 COPY ./requirements.txt ./requirements_mask2former.txt
 RUN pip3 install -r ./requirements_mask2former.txt
 RUN pip3 install torchinfo
+RUN pip3 install ultralytics
