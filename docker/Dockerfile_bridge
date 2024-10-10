@@ -74,3 +74,4 @@ RUN pip3 install -U pycocotools
 RUN python3 -m pip install -U 'git+https://github.com/facebookresearch/detectron2.git@ff53992b1985b63bd3262b5a36167098e3dada02'
 COPY ./requirements.txt ./requirements_mask2former.txt
 RUN pip3 install -r ./requirements_mask2former.txt
+RUN pip3 install torchinfo

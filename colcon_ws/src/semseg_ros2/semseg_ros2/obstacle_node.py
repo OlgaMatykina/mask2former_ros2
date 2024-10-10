@@ -25,7 +25,7 @@ class ObstacleNode(Node):
         for name, types in msg_type:
             if name == topic_name:
                 return types[0]  # Возвращаем первый тип
-        return 'sensor_msgs/msg/CompressedImage'
+        return 'sensor_msgs/msg/Image'
     def __init__(self):
         super().__init__('obstacle_node')
         #print ('GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD GOOD')
@@ -33,12 +33,12 @@ class ObstacleNode(Node):
         segmentation_sub = message_filters.Subscriber(self, Image, 'segmentation')
         
         # Получаем тип сообщения
-        self.depth_msg_type = self.get_topic_type('/depth_camera')
+        self.depth_msg_type = self.get_topic_type('depth')
 
         print('TYPE', self.depth_msg_type)
         
         # depth_sub = message_filters.Subscriber(self, CompressedImage, 'depth')
-        depth_sub = message_filters.Subscriber(self, get_message(self.depth_msg_type), '/depth_camera')
+        depth_sub = message_filters.Subscriber(self, get_message(self.depth_msg_type), 'depth')
 
         self.ts = message_filters.TimeSynchronizer([image_sub, segmentation_sub, depth_sub], 10)
         self.ts.registerCallback(self.obstacle_detection)

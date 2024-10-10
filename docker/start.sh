@@ -24,7 +24,7 @@ else
 fi
 
 xhost +
-docker run -it -d --rm  --gpus all \
+docker run -it -d --gpus all \
         $ARGS \
         --env="DISPLAY=$DISPLAY" \
         --env="QT_X11_NO_MITSHM=1" \

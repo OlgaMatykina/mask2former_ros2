@@ -158,3 +158,23 @@ rviz2
 ros2 bag record /camera_left /coords_edge_2d /coords_edge_3d /depth_camera /distances /obstacles /obstacles_visualisation \
   /radar/target_list_cartesian /road_edge_vis /segmentation /segmentation_color /tf /tf_static
 ```
+
+
+```
+ros2 bag record -d 90 \
+/cam1/zed_node_0/depth/camera_info \
+/cam1/zed_node_0/depth/depth_registered \
+/cam1/zed_node_0/left/camera_info \
+/cam1/zed_node_0/left/image_rect_color/compressed \
+/cam1/zed_node_0/right/camera_info \
+/cam1/zed_node_0/right/image_rect_color/compressed \
+/cam2/zed_node_1/depth/camera_info \
+/cam2/zed_node_1/depth/depth_registered \
+/cam2/zed_node_1/left/camera_info \
+/cam2/zed_node_1/left/image_rect_color/compressed \
+/cam2/zed_node_1/right/camera_info \
+/cam2/zed_node_1/right/image_rect_color/compressed \
+/radar/target_list_cartesian \
+/tf \
+/tf_static
+```

@@ -26,8 +26,10 @@ def generate_launch_description():
         ),
         launch.actions.DeclareLaunchArgument(
             'image_topic',
-            default_value= '/camera_left'
+            # default_value= '/camera_left'
+            default_value= '/cam2/zed_node_1/left/image_rect_color/compressed'
             # default_value='image_rect_color'
+            # '/cam1/zed_node_0/left/image_rect_color/compressed' #'
         ),
         launch.actions.DeclareLaunchArgument(
             'segmentation_topic',
@@ -39,7 +41,9 @@ def generate_launch_description():
         ),
         launch.actions.DeclareLaunchArgument(
             'depth_topic',
-            default_value='/depth_camera'
+            # default_value='/depth_camera'
+            default_value='/cam2/zed_node_1/depth/depth_registered'
+            # /cam1/zed_node_0/depth/depth_registered' #
         ),
         launch.actions.DeclareLaunchArgument(
             'obstacles_visualisation_topic',
