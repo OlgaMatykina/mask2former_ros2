@@ -9,12 +9,12 @@ import time
 from segm_msgs.msg import Edges2d, Edges3d, Coords2d, Coords3d
 
 class RoadEdgeDetection():
-    def __init__(self, image, mask, positive, depth):
+    def __init__(self, image, mask, positive, depth, header):
         self.image = image
         self.mask = mask
         self.depth = depth
         self.positive = positive
-
+        self.header = header
     #def get_xyz(self, x_p,y_p,Z,c_x = 427.2,c_y=240.15,f_x=423.96,f_y=423.96):
     def get_xyz(self, x_p,y_p,Z,c_x = 628.25,c_y=354.76 ,f_x=954.4,f_y=954.4):
         X = (x_p - c_x) * Z / f_x
@@ -175,6 +175,7 @@ class RoadEdgeDetection():
             image = cv2.putText(image, f'Z:{round(Z_right[idx_right],3)} m', (900,200), cv2.FONT_HERSHEY_SIMPLEX,  
                             1, (0, 0, 255), 2, cv2.LINE_AA)
         edges2d_msg = Edges2d()
+        edges2d_msg.header = self.header
         edges2d_msg.left_side = self.get_coords2d_msg(left_side[:,0], left_side[:,1])
         edges2d_msg.right_side = self.get_coords2d_msg(right_side[:,0], right_side[:,1])
 
@@ -186,6 +187,7 @@ class RoadEdgeDetection():
 
     def get_coords2d_msg(self, x, y):
         msg = Coords2d()
+        msg.header = self.header
         msg.x = [int(a) for a in x]
         msg.y = [int(a) for a in y]
         return msg

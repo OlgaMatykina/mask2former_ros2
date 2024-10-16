@@ -61,7 +61,8 @@ class DistanceNode(Node):
         depth[depth == 0] = 45
         depth = np.nan_to_num(depth, nan=200, posinf=200, neginf=200)
         if np.sum(mask) > 300:
-            road_detection = RoadEdgeDetection(image, road_mask, positive, depth)
+            header  = segm_msg.header
+            road_detection = RoadEdgeDetection(image, road_mask, positive, depth, header)
 
             distances, road_edge_vis, edges2d_msg, edges3d_msg = road_detection.find_distances()
             cv2.imwrite('test.png', road_edge_vis)
@@ -69,8 +70,9 @@ class DistanceNode(Node):
             distances = [-1.0,-1.0]
             road_edge_vis = image
             edges2d_msg = Edges2d()
-            edges2d_msg.left_side = self.get_empty_coords2d_msg()
-            edges2d_msg.right_side = self.get_empty_coords2d_msg()
+            edges2d_msg.header = segm_msg.header
+            edges2d_msg.left_side = self.get_empty_coords2d_msg(segm_msg)
+            edges2d_msg.right_side = self.get_empty_coords2d_msg(segm_msg)
 
             edges3d_msg = Edges3d()
 
@@ -88,8 +90,9 @@ class DistanceNode(Node):
         self.coords2d.publish(edges2d_msg)
         self.coords3d.publish(edges3d_msg)
 
-    def get_empty_coords2d_msg(self):
+    def get_empty_coords2d_msg(self, segm_msg):
         msg = Coords2d()
+        msg.header = segm_msg.header
         msg.x = [-1.]
         msg.y = [-1.]
         return msg
