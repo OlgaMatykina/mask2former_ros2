@@ -64,11 +64,13 @@ class RoadEdgeDetection():
         ret, mask = cv2.threshold(self.mask , 0, 255, cv2.THRESH_BINARY)
         contours, hier = cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
         if len(contours) == 0:
-            return [-1.0, -1.0], self.image
+            return [-1.0, -1.0], self.image, None, None
         if len(contours) > 1:
             max_contour = self.get_max_contour(contours)
         else:
             max_contour = contours[0]
+        if len(max_contour) == 0:
+            return [-1.0, -1.0], self.image, None, None
         max_contour = max_contour.reshape(-1, 2)
         max_contour = self.delete_edges(max_contour, mask)
         #M = cv2.moments(max_contour)
@@ -183,7 +185,7 @@ class RoadEdgeDetection():
         edges3d_msg.left_side = self.get_coords3d_msg(X_left, Y_left, Z_left)
         edges3d_msg.right_side = self.get_coords3d_msg(X_right, Y_right, Z_right)
         
-        return [dist_left.item(), dist_right.item()], image, edges2d_msg, edges3d_msg
+        return [np.asarray(dist_left).item(), np.asarray(dist_right).item()], image, edges2d_msg, edges3d_msg
 
     def get_coords2d_msg(self, x, y):
         msg = Coords2d()

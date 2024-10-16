@@ -119,7 +119,7 @@ class YOLOVisualizerNode(Node):
 
         image_sub = message_filters.Subscriber(self, CompressedImage, "image")
         segmentation_sub = message_filters.Subscriber(
-            self, Objects, "/yolo_segm"
+            self, Objects, "/merged_obstacles"
         )
 
         self.ts = message_filters.TimeSynchronizer(

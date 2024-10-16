@@ -30,6 +30,8 @@ setup(
             'distance_node = semseg_ros2.distance_node:main',
             'yolo_visualizer_node = semseg_ros2.yolo_visualizer_node:main',
             'yolov11_seg_node = semseg_ros2.yolov11_seg_node:main',
+            'merge_obstacles_node = semseg_ros2.merge_obstacles_node:main',
+
         ],
     },
 )

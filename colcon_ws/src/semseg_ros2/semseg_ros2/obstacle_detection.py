@@ -41,7 +41,7 @@ class ObstacleDetection():
 
         height, width = self.mask.shape[:2]
 
-        for category_id, mask in enumerate([negative, positive]):
+        for category_id, mask in enumerate([negative]):
             contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             for contour in contours:
                 start_time = time.time()
