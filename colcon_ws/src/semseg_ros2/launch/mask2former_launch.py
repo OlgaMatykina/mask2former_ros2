@@ -137,6 +137,27 @@ def generate_launch_description():
             ],
             output="screen"
         ),
+        launch_ros.actions.Node(
+            package='semseg_ros2',
+            namespace=launch.substitutions.LaunchConfiguration('camera_ns'),
+            executable='yolov11_seg_node',
+            name='yolov11_seg_node',
+            remappings=[
+                ('image', launch.substitutions.LaunchConfiguration('image_topic')),
+                ('depth', launch.substitutions.LaunchConfiguration('depth_topic')),
+            ],
+            output="screen"
+        ),
+        launch_ros.actions.Node(
+            package='semseg_ros2',
+            namespace=launch.substitutions.LaunchConfiguration('camera_ns'),
+            executable='yolo_visualizer_node',
+            name='yolo_visualizer_node',
+            remappings=[
+                ('image', launch.substitutions.LaunchConfiguration('image_topic')),
+            ],
+            output="screen"
+        ),
         # launch.actions.ExecuteProcess(
         #     cmd=['ros2', 'bag', 'record', '-a'],
         #     output='screen'

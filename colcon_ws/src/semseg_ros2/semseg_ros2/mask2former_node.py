@@ -54,7 +54,7 @@ class SemSegNode(Node):
         # segmentation[-90:] = np.where(segmentation[-90:],3,0)
         end_time = time.time()
         processing_time = (end_time - start_time) * 1000  # в миллисекундах
-        # self.get_logger().info(f'Processing time: {processing_time:.2f} ms')
+        self.get_logger().info(f'Processing time: {processing_time:.2f} ms')
 
         segmentation_msg = self.br.cv2_to_imgmsg(segmentation, 'mono8')
         segmentation_msg.header = image_msg.header

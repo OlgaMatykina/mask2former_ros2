@@ -117,7 +117,7 @@ class YOLOVisualizerNode(Node):
             self.get_parameter("queue_size").get_parameter_value().integer_value
         )
 
-        image_sub = message_filters.Subscriber(self, CompressedImage, "/cam2/zed_node_1/left/image_rect_color/compressed")
+        image_sub = message_filters.Subscriber(self, CompressedImage, "image")
         segmentation_sub = message_filters.Subscriber(
             self, Objects, "/yolo_segm"
         )
@@ -228,7 +228,7 @@ class YOLOVisualizerNode(Node):
 
         segmentation_color = image.copy()
         masks = reconstruct_masks(segm_msg.masks)
-        draw_objects(segmentation_color, None, segm_msg.classes_ids, masks=masks, draw_scores=False, draw_masks=True, draw_ids=True, palette=self.palette, customs=segm_msg.classes_ids)
+        draw_objects(segmentation_color, None, segm_msg.classes_ids, masks=masks, draw_scores=False, draw_masks=True, draw_ids=True, palette=self.palette, customs=segm_msg.distances)
         
         segm_color_msg = self.br.cv2_to_imgmsg(segmentation_color, "bgr8")
         segm_color_msg.header = segm_msg.header

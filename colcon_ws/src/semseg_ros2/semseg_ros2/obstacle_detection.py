@@ -37,7 +37,7 @@ class ObstacleDetection():
         # instance_id = 1
         # start_time = time.time()
         pattern = np.zeros_like(self.mask)
-        pattern[-90:]=1
+        # pattern[-90:]=1
 
         height, width = self.mask.shape[:2]
 

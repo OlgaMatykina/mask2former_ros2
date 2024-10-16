@@ -90,15 +90,15 @@ class DistanceNode(Node):
 
     def get_empty_coords2d_msg(self):
         msg = Coords2d()
-        msg.x = [-1]
-        msg.y = [-1]
+        msg.x = [-1.]
+        msg.y = [-1.]
         return msg
     
     def get_empty_coords3d_msg(self):
         msg = Coords3d()
-        msg.x = [-1]
-        msg.y = [-1]
-        msg.z = [-1]
+        msg.x = [-1.]
+        msg.y = [-1.]
+        msg.z = [-1.]
         return msg
 
 def main(args=None):

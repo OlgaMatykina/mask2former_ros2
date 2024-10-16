@@ -38,7 +38,9 @@ class ObstacleNode(Node):
         print('TYPE', self.depth_msg_type)
         
         # depth_sub = message_filters.Subscriber(self, CompressedImage, 'depth')
-        depth_sub = message_filters.Subscriber(self, get_message(self.depth_msg_type), 'depth')
+        # depth_sub = message_filters.Subscriber(self, get_message(self.depth_msg_type), 'depth')
+        depth_sub = message_filters.Subscriber(self, Image, 'depth')
+
 
         self.ts = message_filters.TimeSynchronizer([image_sub, segmentation_sub, depth_sub], 10)
         self.ts.registerCallback(self.obstacle_detection)
@@ -55,7 +57,7 @@ class ObstacleNode(Node):
         # cv2.imwrite('/home/docker_mask2former_ros2/colcon_ws/src/semseg_ros2/semseg_ros2/0.png', image)
         mask = self.br.imgmsg_to_cv2(segm_msg, desired_encoding='mono8')
         mask = np.where(np.isin(mask, [1,2]),mask,0)
-        mask[-90:] = 0
+        # mask[-90:] = 0
         if self.depth_msg_type == 'sensor_msgs/msg/CompressedImage':
             depth = image_tools.it.convert_compressedDepth_to_cv2(depth_msg)
         else:
